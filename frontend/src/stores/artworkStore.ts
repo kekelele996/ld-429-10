@@ -19,15 +19,32 @@ export const useArtworkStore = create<ArtworkState>((set) => ({
       if (!targetRoom) {
         return state;
       }
-      const occupiedPositions = state.artworks
+      const occupiedMountPointIds = state.artworks
         .filter((artwork) => artwork.roomId === roomId && artwork.id !== artworkId)
-        .map((artwork) => JSON.stringify(artwork.mountPosition));
+        .map((artwork) => {
+          const matched = targetRoom.mountPoints.find(
+            (point) =>
+              point.position.x === artwork.mountPosition.x &&
+              point.position.y === artwork.mountPosition.y &&
+              point.position.z === artwork.mountPosition.z,
+          );
+          return matched?.id;
+        })
+        .filter(Boolean);
       const availableMountPoint = targetRoom.mountPoints.find(
-        (point) => !occupiedPositions.includes(JSON.stringify(point.position)),
+        (point) => !occupiedMountPointIds.includes(point.id),
       );
-      const mountPosition = availableMountPoint?.position ?? targetRoom.mountPoints[0]?.position ?? state.artworks.find((a) => a.id === artworkId)?.mountPosition;
+      const mountPoint = availableMountPoint ?? targetRoom.mountPoints[0];
+      if (!mountPoint) {
+        return state;
+      }
+      const originalArtwork = state.artworks.find((a) => a.id === artworkId);
+      const mountPosition = mountPoint.position ?? originalArtwork?.mountPosition;
+      const rotationY = mountPoint.rotationY ?? originalArtwork?.rotationY ?? 0;
       return {
-        artworks: state.artworks.map((artwork) => (artwork.id === artworkId ? { ...artwork, roomId, mountPosition } : artwork)),
+        artworks: state.artworks.map((artwork) =>
+          artwork.id === artworkId ? { ...artwork, roomId, mountPosition, rotationY } : artwork,
+        ),
       };
     }),
 }));

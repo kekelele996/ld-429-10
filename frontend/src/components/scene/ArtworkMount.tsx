@@ -7,7 +7,7 @@ import { loadArtworkTexture } from '../../utils/threeUtils';
 export function ArtworkMount({ artwork, onFocus }: { artwork: Artwork; onFocus: (id: string) => void }) {
   const texture = loadArtworkTexture(artwork.imageUrl);
   return (
-    <group position={[artwork.mountPosition.x, artwork.mountPosition.y, artwork.mountPosition.z]}>
+    <group position={[artwork.mountPosition.x, artwork.mountPosition.y, artwork.mountPosition.z]} rotation={[0, artwork.rotationY ?? 0, 0]}>
       <mesh onClick={() => onFocus(artwork.id)}>
         <boxGeometry args={[2.45, 1.7, 0.08]} />
         <meshStandardMaterial color={FRAME_STYLE_COLORS[artwork.frameStyle]} roughness={0.45} />

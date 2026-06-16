@@ -12,6 +12,7 @@ export interface Artwork {
   description: string;
   roomId: string;
   mountPosition: Vector3Tuple;
+  rotationY: number;
   frameStyle: FrameStyle;
   tags: string[];
 }
