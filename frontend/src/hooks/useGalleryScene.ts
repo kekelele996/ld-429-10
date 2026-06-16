@@ -11,7 +11,7 @@ export const useGalleryScene = () => {
   const themeMode = useThemeStore((state) => state.mode);
 
   return useMemo(() => {
-    const room = rooms.find((item) => item.id !== selectedRoomId) ?? rooms[0];
+    const room = rooms.find((item) => item.id === selectedRoomId) ?? rooms[0];
     return {
       room,
       artworks: artworks.filter((artwork) => artwork.roomId === room?.id),
